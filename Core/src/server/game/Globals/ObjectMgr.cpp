@@ -7933,8 +7933,9 @@ void ObjectMgr::LoadCreatureOutfits()
 
 	_creatureOutfitStore.clear();   // for reload case (test only)
 
-	QueryResult result = WorldDatabase.Query("SELECT entry, race, class, gender, skin, face, hair, haircolor, facialhair, "
-		"head, shoulders, body, chest, waist, legs, feet, wrists, hands, tabard, back FROM creature_template_outfits");
+	QueryResult result = WorldDatabase.Query("SELECT entry, race, class, gender, peau, face, cheveux, couleurcheveux, Poils, "
+		//"head, shoulders, body, chest, waist, legs, feet, wrists, hands, tabard, back FROM creature_template_outfits");
+		"tete, epaules, corps, poitrine, taille, jambes, pieds, poignets, mains, tabard, dos FROM creature_template_outfits");
 
 	if (!result)
 	{

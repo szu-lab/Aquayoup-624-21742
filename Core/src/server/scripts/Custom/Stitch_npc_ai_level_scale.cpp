@@ -62,6 +62,7 @@ public: Stitch_npc_ai_level_scale_caster() : CreatureScript("Stitch_npc_ai_level
 				Unit* victim = me->GetVictim();
 				uint32 _level = victim->getLevel();
 
+				me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IN_COMBAT);
 				AttackStartCaster(victim, 20.0f);							// Distance de cast
 				mouvementmob(6);
 
@@ -258,6 +259,7 @@ public: Stitch_npc_ai_level_scale_melee() : CreatureScript("Stitch_npc_ai_level_
 					return;
 
 				agrolevelmob();
+				me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IN_COMBAT);
 				DoMeleeAttackIfReady();								// Combat en Melee
 
 				// Spell a lancer a l'agro ------------------------------------------------------------------------------------------------------------------------------
@@ -409,6 +411,7 @@ public: Stitch_npc_ai_level_scale_heal() : CreatureScript("Stitch_npc_ai_level_s
 
 				AttackStartCaster(victim, 20.0f);							// Distance de cast
 				mouvementmob(6);
+				me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IN_COMBAT);
 
 				// Spell a lancer a l'agro ---------------------------------------------------------------------------------------------------------------------
 				me->CastSpell(me, spellbuf, true);							// Creature_Template->Spell1 : Buf sur soi
@@ -560,7 +563,7 @@ public: Stitch_npc_ai_level_scale_heal() : CreatureScript("Stitch_npc_ai_level_s
 					resteadistancetimer = urand(300, 500);
 				} else resteadistancetimer -= diff;
 
-				// Quite le combat si la cible > 40m --------------------------------------------------------------------------------------------------------
+				// Quite le combat si la cible > 30m --------------------------------------------------------------------------------------------------------
 				if ((!me->IsWithinCombatRange(me->GetVictim(), distancedecast+10.0f)))
 					if (me->GetDistance(me->GetVictim()) > distancedecast + 10.0f)
 					{

@@ -138,6 +138,7 @@ public: Stitch_npc_ai_druide() : CreatureScript("Stitch_npc_ai_druide") { }
 				Unit* victim = me->GetVictim();
 				Dist = me->GetDistance(victim);
 				me->SetReactState(REACT_AGGRESSIVE);
+				me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IN_COMBAT);
 
 				// Forcer le choix de la Spécialisation par creature_template->pickpocketloot
 				ForceBranche = me->GetCreatureTemplate()->pickpocketLootId;							// creature_template->pickpocketloot
@@ -359,21 +360,22 @@ public: Stitch_npc_ai_druide() : CreatureScript("Stitch_npc_ai_druide") { }
 					return;
 
 				Dist = me->GetDistance(me->GetVictim());
-				if ((Dist > DistanceDeCast) || (me->GetDistance2d(me->GetHomePosition().GetPositionX(), me->GetHomePosition().GetPositionY()) > 40))
+				if ((Dist > DistanceDeCast) || (me->GetDistance2d(me->GetHomePosition().GetPositionX(), me->GetHomePosition().GetPositionY()) > 30))
 				{
 					RetireBugDeCombat();
 					me->AddUnitState(UNIT_STATE_EVADE);
-					EnterEvadeMode(EVADE_REASON_SEQUENCE_BREAK);						// Quite le combat si la cible > 30m (Caster & Mélée) ou > 40m de home
+					EnterEvadeMode(EVADE_REASON_SEQUENCE_BREAK);						// Quite le combat si la cible > 30m (Caster & Mélée) ou > 30m de home
 				}
 			}
 			void Mouvement_Caster(uint32 diff)
 			{
-				if (!UpdateVictim() || me->HasUnitState(UNIT_STATE_CASTING))
+				if (!UpdateVictim() /*|| me->HasUnitState(UNIT_STATE_CASTING)*/)
 					return;
 
 				Mana = me->GetPower(POWER_MANA);
 				Unit* victim = me->GetVictim();
 				Dist = me->GetDistance(victim);
+				if (!me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IN_COMBAT)) { me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IN_COMBAT); }
 
 				if (Cooldown_ResteADistance <= diff)
 				{
