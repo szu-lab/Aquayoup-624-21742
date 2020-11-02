@@ -1,6 +1,6 @@
 ////#########################################################################################################################################################################################################################################
 // Copyright (C) Juin 2020 Stitch pour Aquayoup
-// AI generique npc par classe : PRETRE Ver 2020-10-24
+// AI generique npc par classe : PRETRE Ver 2020-11-01
 // Il est possible d'influencer le temp entre 2 cast avec `BaseAttackTime` & `RangeAttackTime` 
 // Necessite dans Creature_Template :
 // Minimun  : UPDATE `creature_template` SET `ScriptName` = 'Stitch_npc_ai_pretre',`AIName` = '' WHERE (entry = 15100003);
@@ -232,6 +232,11 @@ public: Stitch_npc_ai_pretre() : CreatureScript("Stitch_npc_ai_pretre") { }
 
 					// ####################################################################################################################################################
 					// Combat suivant la Spécialisation
+					if (me->HasUnitState(UNIT_STATE_CASTING) ) 
+					{ 
+						me->ClearUnitState(UNIT_STATE_MOVING); 
+					}
+
 					switch (BrancheSpe)
 					{
 					case 1: // Spécialisation Ombre #######################################################################################################################
@@ -315,9 +320,9 @@ public: Stitch_npc_ai_pretre() : CreatureScript("Stitch_npc_ai_pretre") { }
 
 					// ####################################################################################################################################################
 					Mouvement_Caster(diff);
-					Mouvement_All();
 				}
 				// ########################################################################################################################################################
+				Mouvement_All();
 			}
 
 			void RetireBugDeCombat()
@@ -335,6 +340,12 @@ public: Stitch_npc_ai_pretre() : CreatureScript("Stitch_npc_ai_pretre") { }
 			}
 			void Mouvement_All()
 			{
+
+				if (me->IsAlive() && !me->IsInCombat() /*&& !UpdateVictim()*/ && !me->HasUnitState(UNIT_STATE_MOVE) && (me->GetDistance2d(me->GetHomePosition().GetPositionX(), me->GetHomePosition().GetPositionY()) > 1))
+				{
+					EnterEvadeMode(EVADE_REASON_SEQUENCE_BREAK);
+				}
+
 				if (!UpdateVictim())
 					return;
 

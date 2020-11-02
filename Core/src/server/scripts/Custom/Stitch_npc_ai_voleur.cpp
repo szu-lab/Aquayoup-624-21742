@@ -351,12 +351,11 @@ public: Stitch_npc_ai_voleur() : CreatureScript("Stitch_npc_ai_voleur") { }
 					}
 
 					Mouvement_Contact(diff);
-					Mouvement_All();
-
 					// ############################################################################################################################################
 
 				}
 				// ################################################################################################################################################
+				Mouvement_All();
 			}
 
 			void RetireBugDeCombat()
@@ -374,6 +373,11 @@ public: Stitch_npc_ai_voleur() : CreatureScript("Stitch_npc_ai_voleur") { }
 			}
 			void Mouvement_All()
 			{
+				if (me->IsAlive() && !me->IsInCombat() /*&& !UpdateVictim()*/ && !me->HasUnitState(UNIT_STATE_MOVE) && (me->GetDistance2d(me->GetHomePosition().GetPositionX(), me->GetHomePosition().GetPositionY()) > 1))
+				{
+					EnterEvadeMode(EVADE_REASON_SEQUENCE_BREAK);
+				}
+
 				if (!UpdateVictim())
 					return;
 
@@ -517,8 +521,8 @@ public: Stitch_npc_ai_voleur() : CreatureScript("Stitch_npc_ai_voleur") { }
 			void VisuelPowerEnergy()
 		{
 				me->setPowerType(POWER_ENERGY);
-				me->SetMaxPower(POWER_ENERGY, 99);
-				me->SetPower(POWER_ENERGY, 99);
+				me->SetMaxPower(POWER_ENERGY, 100);
+				me->SetPower(POWER_ENERGY, 100);
 		}
 			void VisuelPowerDemonicFury()
 		{
