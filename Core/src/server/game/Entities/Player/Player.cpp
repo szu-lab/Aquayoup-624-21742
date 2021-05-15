@@ -1845,9 +1845,6 @@ void Player::AddToWorld()
 		if (m_items[i])
 			m_items[i]->AddToWorld();
 
-//Stitch apprentissage spell a la connexion
-	ApprendLesSpells();
-
 }
 
 void Player::RemoveFromWorld()
@@ -2634,6 +2631,7 @@ void Player::GiveLevel(uint8 level)
 //Stitch Vampire Unlearn spells avant levelup - PLAYER_SPEC_ID_VAMPIRE = 538 correspond a ID de ChrSpecialization.dbc
 	if (GetUInt32Value(PLAYER_FIELD_CURRENT_SPEC_ID) == PLAYER_SPEC_ID_VAMPIRE)
 	{
+		/*
 		RemoveSpell(300124);
 		RemoveSpell(300125);
 		RemoveSpell(300126);
@@ -2655,6 +2653,7 @@ void Player::GiveLevel(uint8 level)
 		RemoveSpell(300143);
 		RemoveSpell(300144);
 		RemoveSpell(300145);
+		*/
 	}
 
     UpdateSkillsForLevel();
@@ -2688,9 +2687,6 @@ void Player::GiveLevel(uint8 level)
         SetPower(POWER_RAGE, GetMaxPower(POWER_RAGE));
     
 	SetPower(POWER_FOCUS, 0);
-
-	//Stitch apprentissage spell au levelup
-	ApprendLesSpells();
 
     // update level to hunter/summon pet
     if (Pet* pet = GetPet())
@@ -26821,61 +26817,6 @@ uint32 Player::DoRandomRoll(uint32 minimum, uint32 maximum)
     return roll;
 }
 
-// ***********************************
-//Stitch void Player::ApprendLesSpells()
-// ***********************************
-
-void Player::ApprendLesSpells()
-{
-	uint8 _class = getClass();
-
-	switch (_class)
-	{
-	case CLASS_WARRIOR:
-		break;
-	case CLASS_PALADIN:
-		break;
-	case CLASS_HUNTER:
-		setPowerType(POWER_FOCUS);
-		SetPower(POWER_FOCUS, 100);
-		break;
-	case CLASS_ROGUE:	// Vampire
-		if (GetUInt32Value(PLAYER_FIELD_CURRENT_SPEC_ID) == PLAYER_SPEC_ID_VAMPIRE) //Si Branche talent vampire - 538 correspond a ID de ChrSpecialization.dbc
-		{
-			if (HasAura(300124) || HasAura(300125))
-			{
-				setPowerType(POWER_DEMONIC_FURY);
-				SetMaxPower(POWER_DEMONIC_FURY, 100);
-			}
-			else
-			{
-				setPowerType(POWER_ENERGY);
-				SetMaxPower(POWER_ENERGY, 100);
-			}
-		}
-		break;
-	case CLASS_PRIEST:
-		// RAZ POWER_SHADOW_ORBS a la connexion sinon bug visuel
-		SetPower(POWER_SHADOW_ORBS, 0);	
-		break;
-	case CLASS_DEATH_KNIGHT:
-		break;
-	case CLASS_SHAMAN:
-		break;
-	case CLASS_MAGE:
-		break;
-	case CLASS_WARLOCK:
-		// RAZ POWER_SOUL_SHARDS a la connexion
-		SetPower(POWER_SOUL_SHARDS, 0);
-		break;
-	case CLASS_MONK:
-		break;
-	case CLASS_DRUID:
-		break;
-	}
-	
-	SaveToDB();
-}
 
 // ShowNeutralPlayerFactionSelectUI
 void Player::ShowNeutralPlayerFactionSelectUI()
